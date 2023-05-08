@@ -5,10 +5,9 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/go-playground/validator/v10"
 
 	"tutorialProject/struct/data"
-
-	"github.com/go-playground/validator/v10"
 )
 
 func RootHandler(c *gin.Context) {
@@ -43,9 +42,8 @@ func DataLebihVarHandler(c *gin.Context) {
 }
 
 func PostDataHandler(c *gin.Context) {
-	var dataInput data.DataInput
-
-	err := c.ShouldBindJSON(&dataInput)
+	var artikel data.Artikel
+	err := c.ShouldBindJSON(&artikel)
 	if err != nil {
 		errorMessages := []string{}
 		for _, e := range err.(validator.ValidationErrors) {
@@ -59,8 +57,10 @@ func PostDataHandler(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{
-		"judul":     dataInput.Judul,
-		"deskripsi": dataInput.Deskripsi,
-	})
+	err = data.Connect.Create(&artikel).Error
+	if err != nil {
+		panic(err)
+	}
+
+	c.JSON(http.StatusOK, gin.H{"Sukses": "Data Berhasil Disimpan."})
 }

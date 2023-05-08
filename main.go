@@ -1,23 +1,22 @@
 package main
 
 import (
-	"log"
 	"tutorialProject/controller"
+	"tutorialProject/struct/data"
 
 	"github.com/gin-gonic/gin"
-
-	"gorm.io/driver/mysql"
-	"gorm.io/gorm"
 )
 
 func main() {
-	dsn := "root:@tcp(127.0.0.1:3306)/tutorialproject?charset=utf8mb4&parseTime=True&loc=Local"
-	_, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
-	if err != nil {
-		log.Fatal("Koneksi Error")
-	} else {
-		log.Fatal("Koneksi Sukses")
-	}
+	// dsn := "root:@tcp(127.0.0.1:3306)/tutorialproject?charset=utf8mb4&parseTime=True&loc=Local"
+	// db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
+	// if err != nil {
+	// 	log.Fatal("Koneksi Error")
+	// }
+	// else {
+	// 	log.Fatal("Koneksi Sukses")
+	// }
+	data.ConnectDatabase()
 
 	router := gin.Default()
 

@@ -3,7 +3,7 @@ package data
 import "time"
 
 type Artikel struct {
-	ID        uint
+	Id        uint `gorm:"primaryKey" json:"id"`
 	Judul     string
 	Deskripsi string
 	Isi       string
