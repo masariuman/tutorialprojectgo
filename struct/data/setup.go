@@ -14,5 +14,7 @@ func ConnectDatabase() {
 		panic(err)
 	}
 
+	database.AutoMigrate(Artikel{})
+
 	Connect = database
 }

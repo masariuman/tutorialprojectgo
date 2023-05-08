@@ -64,3 +64,19 @@ func PostDataHandler(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{"Sukses": "Data Berhasil Disimpan."})
 }
+
+func ReadHandler(c *gin.Context) {
+	var artikels []data.Artikel
+
+	err := data.Connect.Debug().Find(&artikels).Error
+	if err != nil {
+		panic(err)
+	}
+
+	for _, Q := range artikels { //ini seperti foreach
+		fmt.Println("judul : ", Q.Judul)
+		fmt.Println("isi : ", Q.Isi)
+	}
+
+	c.JSON(http.StatusOK, gin.H{"Artikel": &artikels})
+}
