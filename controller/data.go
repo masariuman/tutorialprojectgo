@@ -92,3 +92,20 @@ func ReadidHandler(c *gin.Context) {
 
 	c.JSON(http.StatusOK, artikel)
 }
+
+func UpdateHandler(c *gin.Context) {
+	var artikel data.Artikel
+	id := c.Param("id")
+
+	err := c.ShouldBindJSON(&artikel)
+	if err != nil {
+		panic(err)
+	}
+
+	err = data.Connect.Model(&artikel).Where("id = ?", id).Updates(&artikel).Error
+	if err != nil {
+		panic(err)
+	}
+
+	c.JSON(http.StatusOK, gin.H{"Sukses": "Data Berhasil Diubah."})
+}

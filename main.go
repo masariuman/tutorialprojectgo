@@ -22,6 +22,7 @@ func main() {
 	v1.POST("/data", controller.PostDataHandler)
 	v1.GET("/artikel", controller.ReadHandler)
 	v1.GET("/artikel/:id", controller.ReadidHandler)
+	v1.PUT("/artikel/:id/update", controller.UpdateHandler)
 
 	router.Run()
 
