@@ -78,5 +78,17 @@ func ReadHandler(c *gin.Context) {
 		fmt.Println("isi : ", Q.Isi)
 	}
 
-	c.JSON(http.StatusOK, gin.H{"Artikel": &artikels})
+	c.JSON(http.StatusOK, artikels)
+}
+
+func ReadidHandler(c *gin.Context) {
+	var artikel data.Artikel
+	id := c.Param("id")
+
+	err := data.Connect.Debug().First(&artikel, id).Error
+	if err != nil {
+		panic(err)
+	}
+
+	c.JSON(http.StatusOK, artikel)
 }
