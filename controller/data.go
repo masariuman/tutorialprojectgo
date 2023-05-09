@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
 
@@ -108,4 +109,26 @@ func UpdateHandler(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{"Sukses": "Data Berhasil Diubah."})
+}
+
+func DeleteHandler(c *gin.Context) {
+	var artikel data.Artikel
+
+	var input struct {
+		Id json.Number
+	}
+
+	err := c.ShouldBindJSON(&input)
+	if err != nil {
+		panic(err)
+	}
+
+	id, _ := input.Id.Int64()
+
+	err = data.Connect.Debug().Delete(&artikel, id).Error
+	if err != nil {
+		panic(err)
+	}
+
+	c.JSON(http.StatusOK, gin.H{"Sukses": "Data Berhasil Dihapus."})
 }

@@ -23,6 +23,7 @@ func main() {
 	v1.GET("/artikel", controller.ReadHandler)
 	v1.GET("/artikel/:id", controller.ReadidHandler)
 	v1.PUT("/artikel/:id/update", controller.UpdateHandler)
+	v1.DELETE("/artikel/", controller.DeleteHandler)
 
 	router.Run()
 
