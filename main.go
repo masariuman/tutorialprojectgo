@@ -20,6 +20,7 @@ func main() {
 	v1.GET("/query", controller.QueryHandler)
 	v1.GET("/data/:id/:judul", controller.DataLebihVarHandler)
 	v1.POST("/data", controller.PostDataHandler)
+	v1.GET("/artikel", controller.ReadHandler)
 
 	router.Run()
 
