@@ -8,6 +8,8 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
 
+	"tutorialProject/repository"
+	"tutorialProject/setup"
 	"tutorialProject/struct/data"
 )
 
@@ -58,7 +60,7 @@ func PostDataHandler(c *gin.Context) {
 		return
 	}
 
-	err = data.Connect.Create(&artikel).Error
+	err = setup.Connect.Create(&artikel).Error
 	if err != nil {
 		panic(err)
 	}
@@ -67,9 +69,10 @@ func PostDataHandler(c *gin.Context) {
 }
 
 func ReadHandler(c *gin.Context) {
-	var artikels []data.Artikel
 
-	err := data.Connect.Debug().Find(&artikels).Error
+	articleRepository := repository.NewArticleRepository(setup.Connect)
+	artikels, err := articleRepository.FindAll()
+
 	if err != nil {
 		panic(err)
 	}
@@ -86,7 +89,7 @@ func ReadidHandler(c *gin.Context) {
 	var artikel data.Artikel
 	id := c.Param("id")
 
-	err := data.Connect.Debug().First(&artikel, id).Error
+	err := setup.Connect.Debug().First(&artikel, id).Error
 	if err != nil {
 		panic(err)
 	}
@@ -103,7 +106,7 @@ func UpdateHandler(c *gin.Context) {
 		panic(err)
 	}
 
-	err = data.Connect.Model(&artikel).Where("id = ?", id).Updates(&artikel).Error
+	err = setup.Connect.Model(&artikel).Where("id = ?", id).Updates(&artikel).Error
 	if err != nil {
 		panic(err)
 	}
@@ -125,7 +128,7 @@ func DeleteHandler(c *gin.Context) {
 
 	id, _ := input.Id.Int64()
 
-	err = data.Connect.Debug().Delete(&artikel, id).Error
+	err = setup.Connect.Debug().Delete(&artikel, id).Error
 	if err != nil {
 		panic(err)
 	}

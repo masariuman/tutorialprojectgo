@@ -1,4 +1,4 @@
-package data
+package setup
 
 import (
 	"gorm.io/driver/mysql"
@@ -14,7 +14,7 @@ func ConnectDatabase() {
 		panic(err)
 	}
 
-	database.AutoMigrate(Artikel{})
+	// database.AutoMigrate(Artikel{})
 
 	Connect = database
 }
