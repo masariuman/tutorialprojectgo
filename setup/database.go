@@ -14,6 +14,9 @@ func ConnectDatabase() {
 		panic(err)
 	}
 
+	//tutorialProject
+	//A44BCAwpfa428mGN
+
 	// database.AutoMigrate(Artikel{})
 
 	Connect = database
