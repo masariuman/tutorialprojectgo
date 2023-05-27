@@ -46,8 +46,8 @@ func PostDataHandler(c *gin.Context) {
 	var artikel data.ArtikelRequest
 	err := c.ShouldBindJSON(&artikel)
 
-	// articleRepository := repository.NewArticleRepository(setup.Connect)
-	articleService := service.NewArticleService(repository.NewArticleRepository(setup.Connect))
+	articleRepository := repository.NewArticleRepository(setup.Connect)
+	articleService := service.NewArticleService(articleRepository)
 	_, err = articleService.Store(artikel, err, c)
 
 	if err != nil {

@@ -8,10 +8,10 @@ import (
 
 type ArticleRepository interface {
 	FindAll() ([]data.Artikel, error)
-	FindById(ID int) (data.Artikel, error)
+	FindById(ID string) (data.Artikel, error)
 	Store(artikel data.Artikel) (data.Artikel, error)
-	Update(ID int) (data.Artikel, error)
-	Delete(ID int) (data.Artikel, error)
+	Update(ID string, artikel data.Artikel) (data.Artikel, error)
+	Delete(ID string) (data.Artikel, error)
 }
 
 type repository struct {
@@ -28,7 +28,7 @@ func (r *repository) FindAll() ([]data.Artikel, error) {
 	return artikels, err
 }
 
-func (r *repository) FindById(ID int) (data.Artikel, error) {
+func (r *repository) FindById(ID string) (data.Artikel, error) {
 	var artikel data.Artikel
 	err := r.database.Debug().First(&artikel, ID).Error
 	return artikel, err
@@ -39,13 +39,13 @@ func (r *repository) Store(artikel data.Artikel) (data.Artikel, error) {
 	return artikel, err
 }
 
-func (r *repository) Update(ID int) (data.Artikel, error) {
-	var artikel data.Artikel
+func (r *repository) Update(ID string, artikel data.Artikel) (data.Artikel, error) {
+	// var artikel data.Artikel
 	err := r.database.Model(&artikel).Where("id = ?", ID).Updates(&artikel).Error
 	return artikel, err
 }
 
-func (r *repository) Delete(ID int) (data.Artikel, error) {
+func (r *repository) Delete(ID string) (data.Artikel, error) {
 	var artikel data.Artikel
 	err := r.database.Debug().Delete(&artikel, ID).Error
 	return artikel, err
