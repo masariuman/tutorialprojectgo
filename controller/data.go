@@ -1,14 +1,12 @@
 package controller
 
 import (
-	"encoding/json"
-	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/go-playground/validator/v10"
 
 	"tutorialProject/repository"
+	"tutorialProject/service"
 	"tutorialProject/setup"
 	"tutorialProject/struct/data"
 )
@@ -45,22 +43,13 @@ func DataLebihVarHandler(c *gin.Context) {
 }
 
 func PostDataHandler(c *gin.Context) {
-	var artikel data.Artikel
+	var artikel data.ArtikelRequest
 	err := c.ShouldBindJSON(&artikel)
-	if err != nil {
-		errorMessages := []string{}
-		for _, e := range err.(validator.ValidationErrors) {
-			errorMessage := fmt.Sprintf("Error pada %s, Kondisi : %s", e.Field(), e.ActualTag())
-			errorMessages = append(errorMessages, errorMessage)
-		}
 
-		c.JSON(http.StatusBadRequest, gin.H{
-			"errors": errorMessages,
-		})
-		return
-	}
+	// articleRepository := repository.NewArticleRepository(setup.Connect)
+	articleService := service.NewArticleService(repository.NewArticleRepository(setup.Connect))
+	_, err = articleService.Store(artikel, err, c)
 
-	err = setup.Connect.Create(&artikel).Error
 	if err != nil {
 		panic(err)
 	}
@@ -70,26 +59,28 @@ func PostDataHandler(c *gin.Context) {
 
 func ReadHandler(c *gin.Context) {
 
-	articleRepository := repository.NewArticleRepository(setup.Connect)
-	artikels, err := articleRepository.FindAll()
+	// artikels, err := articleRepository.FindAll() // cara langsung tembak repo
+	articleService := service.NewArticleService(repository.NewArticleRepository(setup.Connect))
+	articles, err := articleService.FindAll()
 
 	if err != nil {
 		panic(err)
 	}
 
-	for _, Q := range artikels { //ini seperti foreach
-		fmt.Println("judul : ", Q.Judul)
-		fmt.Println("isi : ", Q.Isi)
-	}
+	// for _, Q := range artikels { //ini seperti foreach
+	// 	fmt.Println("judul : ", Q.Judul)
+	// 	fmt.Println("isi : ", Q.Isi)
+	// }
 
-	c.JSON(http.StatusOK, artikels)
+	c.JSON(http.StatusOK, articles)
 }
 
 func ReadidHandler(c *gin.Context) {
-	var artikel data.Artikel
 	id := c.Param("id")
+	// articleRepository := repository.NewArticleRepository(setup.Connect)
+	articleService := service.NewArticleService(repository.NewArticleRepository(setup.Connect))
+	artikel, err := articleService.FindById(id)
 
-	err := setup.Connect.Debug().First(&artikel, id).Error
 	if err != nil {
 		panic(err)
 	}
@@ -98,7 +89,7 @@ func ReadidHandler(c *gin.Context) {
 }
 
 func UpdateHandler(c *gin.Context) {
-	var artikel data.Artikel
+	var artikel data.ArtikelRequest
 	id := c.Param("id")
 
 	err := c.ShouldBindJSON(&artikel)
@@ -106,7 +97,10 @@ func UpdateHandler(c *gin.Context) {
 		panic(err)
 	}
 
-	err = setup.Connect.Model(&artikel).Where("id = ?", id).Updates(&artikel).Error
+	// articleRepository := repository.NewArticleRepository(setup.Connect)
+	articleService := service.NewArticleService(repository.NewArticleRepository(setup.Connect))
+	_, err = articleService.Update(id, artikel)
+
 	if err != nil {
 		panic(err)
 	}
@@ -115,10 +109,8 @@ func UpdateHandler(c *gin.Context) {
 }
 
 func DeleteHandler(c *gin.Context) {
-	var artikel data.Artikel
-
 	var input struct {
-		Id json.Number
+		Id string
 	}
 
 	err := c.ShouldBindJSON(&input)
@@ -126,9 +118,10 @@ func DeleteHandler(c *gin.Context) {
 		panic(err)
 	}
 
-	id, _ := input.Id.Int64()
+	// articleRepository := repository.NewArticleRepository(setup.Connect)
+	articleService := service.NewArticleService(repository.NewArticleRepository(setup.Connect))
+	_, err = articleService.Delete(input.Id)
 
-	err = setup.Connect.Debug().Delete(&artikel, id).Error
 	if err != nil {
 		panic(err)
 	}
